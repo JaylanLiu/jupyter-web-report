@@ -39,7 +39,11 @@ setup(
     install_requires=['nbconvert', 'argparse'],
     data_files=[('example',
                  ['example/model.ipynb', 'example/data_mutation.txt']),
-                 ('imgs',['imgs/template_notebook_configuration.gif','imgs/template_notebook_configuration2.gif','imgs/template_notebook_configuration3.gif'])],
+                ('imgs', [
+                    'imgs/template_notebook_configuration.gif',
+                    'imgs/template_notebook_configuration2.gif',
+                    'imgs/template_notebook_configuration3.gif'
+                ])],
     python_requires='>=3.6',
 
     # '-' is illegal in the module name

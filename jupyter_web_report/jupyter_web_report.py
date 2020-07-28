@@ -25,18 +25,25 @@ class jupyter_web_report(object):
         for cell in self.nn["cells"]:
             if (cell["metadata"].hasattr("tags")
                     and "parameters" in cell["metadata"]["tags"]):
-                paras_str = re.split(r"\s+", cell["source"])
-                paras = [re.split("=", para)[0].strip() for para in paras_str]
+                source_cell_str = cell["source"].strip()
+                paras_str = re.split(r"\n", source_cell_str)
+                paras_dict = {
+                    re.split("=", para)[0].strip(): re.split("=",
+                                                             para)[1].strip()
+                    for para in paras_str if '=' in para
+                }
 
-                logger.info('args in ipynb parameters cell' + str(paras))
+                logger.info('args in ipynb parameters cell' + str(paras_dict))
                 logger.info(
                     'used args' +
-                    str(set(args_dict.keys()).intersection(set(paras))))
+                    str(set(args_dict.keys()).intersection(set(paras_dict))))
 
                 source_str = ""
-                for para in paras:
+                for para in paras_dict.keys():
                     if para in args_dict:
-                        source_str += f"{para}='{args_dict[para]}'\n"
+                        source_str += f"{para}={args_dict[para]}\n"
+                    else:
+                        source_str += f"{para}={paras_dict[para]}\n"
 
                 cell["source"] = source_str
         logger.info('parameterizing successfully')
