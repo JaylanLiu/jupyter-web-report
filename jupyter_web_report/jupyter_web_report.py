@@ -41,7 +41,8 @@ class jupyter_web_report(object):
                 source_str = ""
                 for para in paras_dict.keys():
                     if para in args_dict:
-                        source_str += f"{para}={args_dict[para]}\n"
+                        target = args_dict[para].strip('\'\"')
+                        source_str += f"{para}='{target}'\n"
                     else:
                         source_str += f"{para}={paras_dict[para]}\n"
 
