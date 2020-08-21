@@ -54,10 +54,25 @@ class jupyter_web_report(object):
         logger.info('output successfully')
 
     def execute(self, timeout: int = 6000):
+        """Execute notebook and generate cell level log record
+
+        Args:
+            timeout (int, optional): max time limit to run each cell. Defaults to 6000.
+        """
         logger.info('starting executing')
         ep = ExecutePreprocessor(timeout=timeout)
-        ep.preprocess(self.nn, {"metadata": {"path": "."}})
-        logger.info('finished executing')
+        with ep.setup_preprocessor(self.nn, {"metadata": {"path": "."}}):
+            for i,cell in enumerate(self.nn['cells']):
+
+                logger.info(f'executing cell {i}...')
+                try:
+                    ep.preprocess_cell(cell,{},cell_index=i)
+                except Exception:
+                    msg=f'error occurred in cell {i}\n'
+                    msg=msg+cell.source
+                    logger.error(msg, exc_info=True)
+        # ep.preprocess(self.nn, {"metadata": {"path": "."}})
+        logger.info('finished execution')
 
     def export(self, stream=sys.stdout):
         c = Config()
@@ -101,7 +116,7 @@ def interface():
                         help="time for ipynb execuation")
     parser.add_argument("--dryrun",
                         action='store_true',
-                        help="skip execution, generate report directly")
+                        help="skip execution, generate report directly from input notebook")
     parser, unparsed = parser.parse_known_args()
 
     # return unparsed args as a dict
