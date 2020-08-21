@@ -99,6 +99,9 @@ def interface():
                         type=int,
                         default=6000,
                         help="time for ipynb execuation")
+    parser.add_argument("--dryrun",
+                        action='store_true',
+                        help="skip execution, generate report directly")
     parser, unparsed = parser.parse_known_args()
 
     # return unparsed args as a dict
@@ -111,7 +114,9 @@ def main():
 
     jwr = jupyter_web_report(parser.ipynb)
     jwr.parameterize(args)
-    jwr.execute(timeout=parser.timeout)
+
+    if not parser.dryrun:
+        jwr.execute(timeout=parser.timeout)
 
     if parser.output:
         if parser.output.endswith('html'):
