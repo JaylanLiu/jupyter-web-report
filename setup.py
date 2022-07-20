@@ -36,7 +36,7 @@ setup(
     packages=find_packages(),
 
     #py_modules=['jupyter-web-report'],
-    install_requires=['nbconvert==5.4.1', 'argparse'],
+    install_requires=['nbconvert==5.4.1', 'mistune==0.8.4', 'ipython-genutils==0.2.0', 'argparse'],
     data_files=[('example',
                  ['example/model.ipynb', 'example/data_mutation.txt']),
                 ('imgs', [
