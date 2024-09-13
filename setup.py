@@ -1,5 +1,6 @@
-from setuptools import setup, find_packages
 from os import path
+
+from setuptools import find_packages, setup
 
 here = path.abspath(path.dirname(__file__))
 
@@ -36,14 +37,15 @@ setup(
     packages=find_packages(),
 
     #py_modules=['jupyter-web-report'],
-    install_requires=['nbconvert==5.4.1', 'mistune==0.8.4', 'ipython-genutils==0.2.0', 'argparse'],
-    data_files=[('example',
-                 ['example/model.ipynb', 'example/data_mutation.txt']),
-                ('imgs', [
-                    'imgs/template_notebook_configuration.gif',
-                    'imgs/template_notebook_configuration2.gif',
-                    'imgs/template_notebook_configuration3.gif'
-                ])],
+    install_requires=['nbconvert', 'mistune', 'ipython-genutils', 'argparse'],
+    data_files=[
+        ('example', ['example/model.ipynb', 'example/data_mutation.txt']),
+        ('imgs', [
+            'imgs/template_notebook_configuration.gif',
+            'imgs/template_notebook_configuration2.gif',
+            'imgs/template_notebook_configuration3.gif', 'imgs/jupyter_lab.jpg'
+        ])
+    ],
     python_requires='>=3.6',
 
     # '-' is illegal in the module name

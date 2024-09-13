@@ -1,12 +1,13 @@
 import argparse
+import logging
 import re
 import sys
-import logging
-from traitlets.config import Config
+from collections import defaultdict
+
 import nbformat as nbf
 from nbconvert.exporters import HTMLExporter
 from nbconvert.preprocessors import ExecutePreprocessor
-from collections import defaultdict
+from traitlets.config import Config
 
 
 class jupyter_web_report(object):
@@ -16,6 +17,7 @@ class jupyter_web_report(object):
     Args:
         object ([type]): [description]
     """
+
     def __init__(self, template: str):
         self.nn = nbf.read(template, as_version=nbf.NO_CONVERT)
         logger.info('loading template ipynb successfully')
@@ -61,17 +63,8 @@ class jupyter_web_report(object):
         """
         logger.info('starting executing')
         ep = ExecutePreprocessor(timeout=timeout)
-        with ep.setup_preprocessor(self.nn, {"metadata": {"path": "."}}):
-            for i,cell in enumerate(self.nn['cells']):
+        ep.preprocess(self.nn, {'metadata': {'path': '.'}})
 
-                logger.info(f'executing cell {i}...')
-                try:
-                    ep.preprocess_cell(cell,{},cell_index=i)
-                except Exception:
-                    msg=f'error occurred in cell {i}\n'
-                    msg=msg+cell.source
-                    logger.error(msg, exc_info=True)
-        # ep.preprocess(self.nn, {"metadata": {"path": "."}})
         logger.info('finished execution')
 
     def export(self, stream=sys.stdout):
@@ -114,9 +107,10 @@ def interface():
                         type=int,
                         default=6000,
                         help="time for ipynb execuation")
-    parser.add_argument("--dryrun",
-                        action='store_true',
-                        help="skip execution, generate report directly from input notebook")
+    parser.add_argument(
+        "--dryrun",
+        action='store_true',
+        help="skip execution, generate report directly from input notebook")
     parser, unparsed = parser.parse_known_args()
 
     # return unparsed args as a dict
